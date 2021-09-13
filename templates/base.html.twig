@@ -9,6 +9,29 @@
     {% endblock %}
 </head>
 <body>
+<div class="nava">
+    <ul>
+        <li><a href="{{url('announcements_index')}}">{{ 'Announcements'|trans}}</a></li>
+        {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+            <li><a href="{{url('usersdata_index')}}">{{ 'Profile'|trans}}</a></li>
+            <li><a href="{{url('security_logout')}}">{{ 'Logout'|trans}}</a></li>
+        {% else %}
+            <li><a href="{{url('registration')}}">{{ 'Registration'|trans}}</a></li>
+            <li><a href="{{url('security_login')}}">{{ 'Log in'|trans}}</a></li>
+        {% endif %}
+        {% if is_granted('ROLE_ADMIN') %}
+            <li><a href="{{url('category_index')}}">{{ 'Category'|trans}}</a></li>
+            <li><a href="{{url('tag_index')}}">{{ 'Tag'|trans}}</a></li>
+            <li><a href="{{url('admin_index')}}">{{ 'Admin'|trans}}</a></li>
+        {% endif %}
+
+
+
+
+
+
+    </ul>
+</div>
 <div class="container-fluid">
     {% for type, messages in app.session.flashBag.all %}
         {% for message in messages %}

@@ -1,7 +1,8 @@
 <?php
 /*
- *
+ * TagRepository
  */
+
 namespace App\Repository;
 
 use App\Entity\Tag;
@@ -19,7 +20,19 @@ use Doctrine\Persistence\ManagerRegistry;
 class TagRepository extends ServiceEntityRepository
 {
     /**
+     * Items per page.
+     *
+     * Use constants to define configuration options that rarely change instead
+     * of specifying them in app/config/config.yml.
+     * See https://symfony.com/doc/current/best_practices.html#configuration
+     *
+     * @constant int
+     */
+    const PAGINATOR_ITEMS_PER_PAGE = 3;
+
+    /**
      * TAgRepository constructor.
+     * @param ManagerRegistry $registry
      */
     public function __construct(ManagerRegistry $registry)
     {
@@ -38,23 +51,11 @@ class TagRepository extends ServiceEntityRepository
     }
 
     /**
-     * Get or create new query builder.
-     *
-     * @param \Doctrine\ORM\QueryBuilder|null $queryBuilder Query builder
-     *
-     * @return \Doctrine\ORM\QueryBuilder Query builder
-     */
-    private function getOrCreateQueryBuilder(QueryBuilder $queryBuilder = null): QueryBuilder
-    {
-        return $queryBuilder ?: $this->createQueryBuilder('l');
-    }
-
-    /**
      * FindByExampleField.
      *
      * @param Value $value
      *
-     * @return Tag[] Returns an array of Films objects
+     * @return Tag[] Returns an array objects
      */
     public function findByExampleField($value)
     {
@@ -80,6 +81,7 @@ class TagRepository extends ServiceEntityRepository
         $this->_em->persist($tag);
         $this->_em->flush($tag);
     }
+
     // /**
     //  * @return Films[] Returns an array of Films objects
     //  */
@@ -110,9 +112,11 @@ class TagRepository extends ServiceEntityRepository
     */
 
     /**
-     * Query Tag by name
+     * Query Tag by name.
      *
      * @param null $id
+     *
+     * @return int|mixed|string
      */
     public function queryById($id = null)
     {
@@ -120,16 +124,15 @@ class TagRepository extends ServiceEntityRepository
 
         if (!is_null($id)) {
             $queryBuilder->andWhere('l.id LIKE :id')
-                ->setParameter('id', '%' . $id . '%');
+                ->setParameter('id', '%'.$id.'%');
         }
 
         return $queryBuilder->getQuery()->execute();
     }
 
     /**
-     * Query trash by id
-     *
      * @param null $id
+     *
      * @return \Doctrine\ORM\QueryBuilder Query builder
      */
     public function queryById1($id = null): QueryBuilder
@@ -138,11 +141,12 @@ class TagRepository extends ServiceEntityRepository
 
         if (!is_null($id)) {
             $queryBuilder->andWhere('l.id LIKE :id')
-                ->setParameter('id', '%' . $id . '%');
+                ->setParameter('id', '%'.$id.'%');
         }
 
         return $queryBuilder;
     }
+
     /**
      * Delete record.
      *
@@ -155,5 +159,17 @@ class TagRepository extends ServiceEntityRepository
     {
         $this->_em->remove($tag);
         $this->_em->flush($tag);
+    }
+
+    /**
+     * Get or create new query builder.
+     *
+     * @param \Doctrine\ORM\QueryBuilder|null $queryBuilder Query builder
+     *
+     * @return \Doctrine\ORM\QueryBuilder Query builder
+     */
+    private function getOrCreateQueryBuilder(QueryBuilder $queryBuilder = null): QueryBuilder
+    {
+        return $queryBuilder ?: $this->createQueryBuilder('l');
     }
 }

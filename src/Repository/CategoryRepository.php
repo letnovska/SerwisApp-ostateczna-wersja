@@ -1,4 +1,7 @@
 <?php
+/*
+ * CategoryRepository.
+ */
 
 namespace App\Repository;
 
@@ -17,7 +20,19 @@ use Doctrine\Persistence\ManagerRegistry;
 class CategoryRepository extends ServiceEntityRepository
 {
     /**
+     * Items per page.
+     *
+     * Use constants to define configuration options that rarely change instead
+     * of specifying them in app/config/config.yml.
+     * See https://symfony.com/doc/current/best_practices.html#configuration
+     *
+     * @constant int
+     */
+    const PAGINATOR_ITEMS_PER_PAGE = 8;
+
+    /**
      * CategoryRepository constructor.
+     * @param ManagerRegistry $registry
      */
     public function __construct(ManagerRegistry $registry)
     {
@@ -33,18 +48,6 @@ class CategoryRepository extends ServiceEntityRepository
     {
         return $this->getOrCreateQueryBuilder()
             ->orderBy('l.id', 'DESC');
-    }
-
-    /**
-     * Get or create new query builder.
-     *
-     * @param \Doctrine\ORM\QueryBuilder|null $queryBuilder Query builder
-     *
-     * @return \Doctrine\ORM\QueryBuilder Query builder
-     */
-    private function getOrCreateQueryBuilder(QueryBuilder $queryBuilder = null): QueryBuilder
-    {
-        return $queryBuilder ?: $this->createQueryBuilder('l');
     }
 
     /**
@@ -78,6 +81,7 @@ class CategoryRepository extends ServiceEntityRepository
         $this->_em->persist($category);
         $this->_em->flush($category);
     }
+
     // /**
     //  * @return Films[] Returns an array of Films objects
     //  */
@@ -108,9 +112,11 @@ class CategoryRepository extends ServiceEntityRepository
     */
 
     /**
-     * Query Category by name
+     * Query Category by name.
      *
      * @param null $id
+     *
+     * @return int|mixed|string
      */
     public function queryById($id = null)
     {
@@ -118,16 +124,17 @@ class CategoryRepository extends ServiceEntityRepository
 
         if (!is_null($id)) {
             $queryBuilder->andWhere('l.id LIKE :id')
-                ->setParameter('id', '%' . $id . '%');
+                ->setParameter('id', '%'.$id.'%');
         }
 
         return $queryBuilder->getQuery()->execute();
     }
 
     /**
-     * Query trash by id
+     * Query trash by id.
      *
      * @param null $id
+     *
      * @return \Doctrine\ORM\QueryBuilder Query builder
      */
     public function queryById1($id = null): QueryBuilder
@@ -136,11 +143,12 @@ class CategoryRepository extends ServiceEntityRepository
 
         if (!is_null($id)) {
             $queryBuilder->andWhere('l.id LIKE :id')
-                ->setParameter('id', '%' . $id . '%');
+                ->setParameter('id', '%'.$id.'%');
         }
 
         return $queryBuilder;
     }
+
     /**
      * Delete record.
      *
@@ -153,5 +161,17 @@ class CategoryRepository extends ServiceEntityRepository
     {
         $this->_em->remove($category);
         $this->_em->flush($category);
+    }
+
+    /**
+     * Get or create new query builder.
+     *
+     * @param \Doctrine\ORM\QueryBuilder|null $queryBuilder Query builder
+     *
+     * @return \Doctrine\ORM\QueryBuilder Query builder
+     */
+    private function getOrCreateQueryBuilder(QueryBuilder $queryBuilder = null): QueryBuilder
+    {
+        return $queryBuilder ?: $this->createQueryBuilder('l');
     }
 }

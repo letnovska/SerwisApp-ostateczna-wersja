@@ -38,7 +38,6 @@ class TagType extends AbstractType
                 'attr' => ['max_length' => 255],
             ]
         );
-
     }
 
     /**

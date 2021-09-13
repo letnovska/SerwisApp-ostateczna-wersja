@@ -38,7 +38,6 @@ class CategoryType extends AbstractType
                 'attr' => ['max_length' => 255],
             ]
         );
-
     }
 
     /**
